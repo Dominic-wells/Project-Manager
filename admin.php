@@ -23,6 +23,16 @@
 </head>
   <body>
 
+  <!--Navbar-->
+  <nav class="navbar navbar-light bg-light">
+
+  <div class="button-bar">
+            <button id="myBtn" onclick="myFunction()">Pause</button>
+            <button id="music-toggle">Toggle Music</button>
+        </div>
+
+    <button class="btn btn-outline-success" type="button" onclick="location.href='login.php'">Login</button>
+</nav>
 
          <!-- The Video -->
          <video autoplay muted loop id="myVideo">
@@ -36,17 +46,49 @@
     </audio>
 
     <header class="viewport-header">
-      
-        <div class="button-bar">
-            <button id="myBtn" onclick="myFunction()">Pause</button>
-            <button id="music-toggle">Toggle Music</button>
-            <button  type="button" onclick="location.href='login.php'">Login</button>
-        </div>
-        <h1>
-            Plan With
-            <span>The-Project-King</span>     
-        </h1>
     </header>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="#">
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                Orders
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                Products
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                Customers
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                Reports
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                Integrations
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+
+
   </body>
   
    <!--Bootstrap JS-->
@@ -58,5 +100,3 @@
     <script src="assets/js/music.js"></script>
     <script src="assets/js/video.js"></script>
 </html>
-
-
