@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,31 +8,17 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500&display=swap" rel="stylesheet">
-    <title>The Project King</title>
+    <title>The Project King-Login</title>
     <!--Bootstrap CSS-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <!--Custom CSS-->
     <link rel="stylesheet" href="assets/css/style.css" type="text/css" />
-    <!--Sortable,js-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.10.2/Sortable.min.js"></script>
     <!--Meta data-->
     <meta name="description" content="The Project King - A tool to help users manage their lives">
     <meta name="keywords" content="The Project King">
     <meta name="author" content="Joe Wells">
 </head>
-  <body>
-
-  <!--Navbar-->
-  <nav class="navbar navbar-light bg-light">
-
-  <div class="button-bar">
-            <button id="myBtn" onclick="myFunction()">Pause</button>
-            <button id="music-toggle">Toggle Music</button>
-        </div>
-
-    <button class="btn btn-outline-success" type="button" onclick="location.href='login.php'">Login</button>
-</nav>
 
          <!-- The Video -->
          <video autoplay muted loop id="myVideo">
@@ -45,49 +31,92 @@
         Your browser does not support the audio element.
     </audio>
 
-    <header class="viewport-header">
 
-        <h1>
-            Plan With
-            <span>The-Project-King</span>     
-        </h1>
+<header class="viewport-header">
+        <div class="button-bar">
+            <button type="button" onclick="location.href='logout.php'">Logout</button>
+            <button type="button" onclick="location.href='index.php'">Home</button>
+            <button id="myBtn" onclick="myFunction()">Pause</button>
+            <button id="music-toggle">Toggle Music</button>
+        </div>
+        <h1>Login</h1>
     </header>
 
-
-    <section class="vh-100 gradient-custom">
-  <div class="container py-5 h-100">
-    <div class="row d-flex justify-content-center align-items-center h-100">
-      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-        <div class="card bg-dark text-white" style="border-radius: 1rem;">
-          <div class="card-body p-5 text-center">
-            <div class="mb-md-5 mt-md-4 pb-5">
-              <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
-              <p class="text-white-50 mb-5">Please enter your login and password!</p>
-              <div class="form-outline form-white mb-4">
-                <input type="email" id="typeEmailX" class="form-control form-control-lg" />
-                <label class="form-label" for="typeEmailX">Email</label>
-              </div>
-              <div class="form-outline form-white mb-4">
-                <input type="password" id="typePasswordX" class="form-control form-control-lg" />
-                <label class="form-label" for="typePasswordX">Password</label>
-              </div>
-              <button class="btn btn-outline-light btn-lg px-5" type="submit">Login</button>
+    <!-- The login form -->
+<div class="vh-100 gradient-custom">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                    <div class="card bg-dark text-white" style="border-radius: 1rem;">
+                        <div class="card-body p-5 text-center">
+                            <h3 class="card-title fw-bold mb-2 text-uppercase">Login</h3>
+                            <form action="login.php" method="POST">
+                                <div class="form-outline form-white mb-4">
+                                    <label for="inputLogin" class="form-label">Username or Email</label>
+                                    <input type="text" class="form-control" id="inputLogin" name="login" required>
+                                </div>
+                                <div class="form-outline form-white mb-4">
+                                    <label for="inputPassword" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="inputPassword" name="password" required>
+                                </div>
+                                <button type="submit" class="btn btn-outline-light btn-lg px-5">Login</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
-</section>
 
-  </body>
-  
-   <!--Bootstrap JS-->
-   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+
+<?php
+session_start();
+require_once 'config.php'; 
+    // The database connection file, this is to avoid storing the connection details in plain view
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $login = htmlspecialchars($_POST['login']);
+    $password = htmlspecialchars($_POST['password']);
+
+    try {
+        $stmt = $pdo->prepare("SELECT userId, username, password, role FROM users WHERE username = :username OR email = :email");
+        $stmt->bindParam(":username", $login, PDO::PARAM_STR);
+        $stmt->bindParam(":email", $login, PDO::PARAM_STR);
+        $stmt->execute();
+
+        if ($stmt->rowCount() == 1) {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (password_verify($password, $row['password'])) {
+                $_SESSION['userId'] = $row['userId'];
+                $_SESSION['username'] = $row['username'];
+                $_SESSION['role'] = $row['role'];
+
+                // Redirect to profile page if login is successful
+                header("Location: profilePage.php"); 
+                exit;
+            } else {
+                $login_error = "Invalid password.";
+            }
+        } else {
+            $login_error = "No account found with that username or email.";
+        }
+    } catch (PDOException $e) {
+        $login_error = "Error: " . $e->getMessage();
+    }
+}
+
+if (!empty($login_error)) {
+    echo '<div class="alert alert-danger">' . $login_error . '</div>';
+}
+?>
+
+  <!--Bootstrap JS-->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
         crossorigin="anonymous"></script>
 
     <!--Custom JS-->
     <script src="assets/js/music.js"></script>
     <script src="assets/js/video.js"></script>
+
 </html>
+
