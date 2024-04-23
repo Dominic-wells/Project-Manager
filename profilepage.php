@@ -37,6 +37,7 @@
     ?>
 
 
+
          <!-- The Video -->
          <video autoplay muted loop id="myVideo">
         <source src="assets/video/background3.mp4" type="video/mp4">
@@ -62,33 +63,47 @@
 
     <!-- Task cards section, this will display the tasks as cards for the user -->
     <div class="container">
-        <div class="row" id="tasks">
+    <div class="row" id="tasks">
+        <?php if (!empty($tasks)): ?>
             <?php foreach ($tasks as $task): ?>
-            <div class="col-md-4">
-                <div class="card mt-3">
-                    <div class="card-body">
-                        <h5 class="card-title"><?= htmlspecialchars($task['title']) ?></h5>
-                        <p class="card-text"><?= htmlspecialchars($task['description']) ?></p>
-                        <a href="edit_task.php?taskId=<?= $task['taskId'] ?>" class="btn btn-primary">Edit</a>
-                        <a href="delete_task.php?taskId=<?= $task['taskId'] ?>" class="btn btn-danger">Delete</a>
+                <div class="col-md-4">
+                    <div class="card mt-3">
+                        <div class="card-body">
+                            <h5 class="card-title"><?= htmlspecialchars($task['title']) ?></h5>
+                            <p class="card-text"><?= htmlspecialchars($task['description']) ?></p>
+                            <!-- Dropdown for editing options and Deeleting tasks  -->
+                            <div class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton<?= $task['taskId'] ?>" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Actions
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton<?= $task['taskId'] ?>">
+                                    <li><a class="dropdown-item" href="edit_task.php?taskId=<?= $task['taskId'] ?>">Edit Task</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="deleteTask(<?= $task['taskId'] ?>)">Delete Task</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="#" onclick="updateStatus('Backlog', <?= $task['taskId'] ?>)">Set to Backlog</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="updateStatus('Doing', <?= $task['taskId'] ?>)">Set to Doing</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="updateStatus('Done', <?= $task['taskId'] ?>)">Set to Done</a></li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
             <?php endforeach; ?>
-            <div class="col-md-4">
-                <div class="card mt-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Add New Task</h5>
-                        <a href="createtask.php" class="btn btn-success">Create Task</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <?php else: ?>
+            <p>No tasks found.</p>
+        <?php endif; ?>
     </div>
+</div>
 
-    <!--Bootstrap JS-->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+
+   <!--Bootstrap JS-->
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
         crossorigin="anonymous"></script>
+
+    <!--Custom JS-->
+    <script src="assets/js/update.js"></script>
+    <script src="assets/js/music.js"></script>
+    <script src="assets/js/video.js"></script>
 </body>
 </html>
