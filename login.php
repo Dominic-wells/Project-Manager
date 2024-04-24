@@ -34,8 +34,8 @@
 
 <header class="viewport-header">
         <div class="button-bar">
-            <button type="button" onclick="location.href='logout.php'">Logout</button>
             <button type="button" onclick="location.href='index.php'">Home</button>
+            <button type="button" onclick="location.href='actions/logout.php'">Logout</button>
             <button id="myBtn" onclick="myFunction()">Pause</button>
             <button id="music-toggle">Toggle Music</button>
         </div>
@@ -76,7 +76,7 @@ require_once 'config.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $login = htmlspecialchars($_POST['login']);
     $password = htmlspecialchars($_POST['password']);
-
+    // Check if the login details are correct
     try {
         $stmt = $pdo->prepare("SELECT userId, username, password, role FROM users WHERE username = :username OR email = :email");
         $stmt->bindParam(":username", $login, PDO::PARAM_STR);
@@ -90,7 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['username'] = $row['username'];
                 $_SESSION['role'] = $row['role'];
 
-                // Redirect to profile page if login is successful
+                // Redirect to Users profile page if login is successful
                 header("Location: profilePage.php"); 
                 exit;
             } else {
@@ -103,7 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $login_error = "Error: " . $e->getMessage();
     }
 }
-
+// Display error message if there is one
 if (!empty($login_error)) {
     echo '<div class="alert alert-danger">' . $login_error . '</div>';
 }
