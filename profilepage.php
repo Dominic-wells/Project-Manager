@@ -54,6 +54,7 @@
         <div class="button-bar">
             <button type="button" onclick="location.href='index.php'">Home</button>
             <button type="button" onclick="location.href='createTask.php'">Create Task</button>
+            <button type="button" onclick="location.href='changePassword.php'">Change Password</button>
             <button type="button" onclick="location.href='actions/logout.php'">Logout</button>
             <button id="myBtn" onclick="myFunction()">Pause</button>
             <button id="music-toggle">Toggle Music</button>
@@ -62,23 +63,37 @@
     </header>
 
 
-    <!-- Task cards section, this will display the tasks as cards for the user -->
-    <div class="container">
+<!-- Task cards section, this will display the tasks as cards for the user -->
+<div class="container">
     <div class="row" id="tasks">
         <?php if (!empty($tasks)): ?>
             <?php foreach ($tasks as $task): ?>
                 <div class="col-md-4">
                     <div class="card mt-3">
+                        <div class="card-header">
+                            Assigned User: 
+                            <?php
+                            // Fetching username of the assigned user from Users table
+                            $assigneeId = $task['assigneeId'];
+                            $stmt = $pdo->prepare("SELECT username FROM Users WHERE userId = ?");
+                            $stmt->execute([$assigneeId]);
+                            $assignedUser = $stmt->fetchColumn();
+                            echo htmlspecialchars($assignedUser);
+                            ?>
+                            <br>
+                            Priority: <?= htmlspecialchars($task['taskPriority']) ?> |
+                            Status: <?= htmlspecialchars($task['status']) ?>
+                        </div>
                         <div class="card-body">
                             <h5 class="card-title"><?= htmlspecialchars($task['title']) ?></h5>
                             <p class="card-text"><?= htmlspecialchars($task['description']) ?></p>
-                            <!-- Dropdown for editing options and Deeleting tasks  -->
+                            <!-- Dropdown for editing options and Deleting tasks -->
                             <div class="dropdown">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton<?= $task['taskId'] ?>" data-bs-toggle="dropdown" aria-expanded="false">
                                     Actions
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton<?= $task['taskId'] ?>">
-                                    <li><a class="dropdown-item" href="edit_task.php?taskId=<?= $task['taskId'] ?>">Edit Task</a></li>
+                                    <li><a class="dropdown-item" href="editTask.php?taskId=<?= $task['taskId'] ?>">Edit Task</a></li>
                                     <li><a class="dropdown-item" href="#" onclick="deleteTask(<?= $task['taskId'] ?>)">Delete Task</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="#" onclick="updateStatus('Backlog', <?= $task['taskId'] ?>)">Set to Backlog</a></li>
@@ -95,7 +110,6 @@
         <?php endif; ?>
     </div>
 </div>
-
 
    <!--Bootstrap JS-->
    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
