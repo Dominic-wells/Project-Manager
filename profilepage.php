@@ -14,6 +14,11 @@
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <!--Custom CSS-->
     <link rel="stylesheet" href="assets/css/style.css" type="text/css" />
+    <!--Meta data-->
+    <meta name="description" content="The Project King - A tool to help users manage their lives">
+    <meta name="keywords" content="The Project King">
+    <meta name="author" content="Joe Wells">
+    
 </head>
 <body>
 
@@ -102,6 +107,18 @@
                                 </ul>
                             </div>
                         </div>
+                        <div class="card-footer text-muted">
+                            Completion Date: <?= htmlspecialchars($task['completionDate']) ?> | 
+                            Created By: 
+                            <?php
+                            // Fetching username
+                            $creatorId = $task['creatorId'];
+                            $stmt = $pdo->prepare("SELECT username FROM Users WHERE userId = ?");
+                            $stmt->execute([$creatorId]);
+                            $creatorUsername = $stmt->fetchColumn();
+                            echo htmlspecialchars($creatorUsername);
+                            ?>
+                        </div>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -110,6 +127,7 @@
         <?php endif; ?>
     </div>
 </div>
+
 
    <!--Bootstrap JS-->
    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
