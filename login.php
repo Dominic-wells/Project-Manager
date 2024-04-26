@@ -68,51 +68,59 @@
     </div>
 
     <?php
-    session_start();
-    require_once 'config.php'; 
-    // The database connection file, this is to avoid storing the connection details in plain view
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $login = htmlspecialchars($_POST['login']);
-        $password = htmlspecialchars($_POST['password']);
+session_start();
+require_once 'config.php'; 
+// The database connection file, this is to avoid storing the connection details in plain view
 
-        try {
-            $stmt = $pdo->prepare("SELECT userId, username, password, role, firstLogin FROM users WHERE username = :username OR email = :email");
-            $stmt->bindParam(":username", $login, PDO::PARAM_STR);
-            $stmt->bindParam(":email", $login, PDO::PARAM_STR);
-            $stmt->execute();
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $login = htmlspecialchars($_POST['login']);
+    $password = htmlspecialchars($_POST['password']);
 
-            if ($stmt->rowCount() == 1) {
-                $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                if (password_verify($password, $row['password'])) {
-                    $_SESSION['userId'] = $row['userId'];
-                    $_SESSION['username'] = $row['username'];
-                    $_SESSION['role'] = $row['role'];
-                    // Redirects user to change password page if first login(hasnt changed password yet) else to profile page
-                    if ($row['firstLogin'] == 1) {
-                        header("Location: changePassword.php"); 
+    try {
+        $stmt = $pdo->prepare("SELECT userId, username, password, role, firstLogin FROM users WHERE username = :username OR email = :email");
+        $stmt->bindParam(":username", $login, PDO::PARAM_STR);
+        $stmt->bindParam(":email", $login, PDO::PARAM_STR);
+        $stmt->execute();
+
+        if ($stmt->rowCount() == 1) {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (password_verify($password, $row['password'])) {
+                $_SESSION['userId'] = $row['userId'];
+                $_SESSION['username'] = $row['username'];
+                $_SESSION['role'] = $row['role'];
+                // Redirects user to change password page if first login(hasn't changed password yet) else to profile page or adminTasks.php if admin
+                if ($row['firstLogin'] == 1) {
+                    header("Location: changePassword.php"); 
+                    exit;
+                } else {
+                    if ($row['role'] == 'admin') {
+                        header("Location: adminTasks.php");
                         exit;
                     } else {
                         header("Location: profilePage.php"); 
                         exit;
                     }
-                } else {
-                    echo '<div class="alert alert-danger">Invalid password.</div>';
                 }
             } else {
-                echo '<div class="alert alert-danger">No account found with that username or email.</div>';
+                echo '<div class="alert alert-danger">Invalid password.</div>';
             }
-        } catch (PDOException $e) {
-            echo '<div class="alert alert-danger">Error: ' . $e->getMessage() . '</div>';
+        } else {
+            echo '<div class="alert alert-danger">No account found with that username or email.</div>';
         }
+    } catch (PDOException $e) {
+        echo '<div class="alert alert-danger">Error: ' . $e->getMessage() . '</div>';
     }
-    ?>
+}
+?>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
-        crossorigin="anonymous"></script>
-    <!-- Custom JS -->
-    <script src="assets/js/music.js"></script>
-    <script src="assets/js/video.js"></script>
+
+  <!--Bootstrap JS-->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+       integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+       crossorigin="anonymous"></script>
+
+   <!--Custom JS-->
+   <script src="assets/js/music.js"></script>
+   <script src="assets/js/video.js"></script>
 </body>
 </html>
