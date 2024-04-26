@@ -74,7 +74,7 @@
         <?php if (!empty($tasks)): ?>
             <?php foreach ($tasks as $task): ?>
                 <div class="col-md-4">
-                    <div class="card mt-3">
+                    <div class="card border-light text-white bg-dark mt-3">
                         <div class="card-header">
                             Assigned User: 
                             <?php
@@ -107,7 +107,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="card-footer text-muted">
+                        <div class="card-footer text-white">
                             Completion Date: <?= htmlspecialchars($task['completionDate']) ?> | 
                             Created By: 
                             <?php
@@ -123,7 +123,9 @@
                 </div>
             <?php endforeach; ?>
         <?php else: ?>
-            <p>No tasks found.</p>
+            <div class="position-fixed top-50 start-50 translate-middle text-white">
+                    <p>No tasks found.</p>
+                </div>
         <?php endif; ?>
     </div>
 </div>
