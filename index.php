@@ -41,6 +41,7 @@
             <button id="myBtn" onclick="myFunction()">Pause</button>
             <button id="music-toggle">Toggle Music</button>
             <button  type="button" onclick="location.href='login.php'">Login</button>
+            <button type="button" onclick="location.href='actions/logout.php'">Logout</button>
         </div>
         <h1>
             Plan With
