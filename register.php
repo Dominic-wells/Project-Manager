@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500&display=swap" rel="stylesheet">
-    <title>The Project King-Register</title>
+    <title>The Project King - Register</title>
     <!--Bootstrap CSS-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
@@ -66,10 +66,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Basic validation for empty fields
     $username = trim($_POST['username']);
     $email = trim($_POST['email']);
-    $password = trim($_POST['password']);
     $role = trim($_POST['role']);
+    
+    // Check if password is empty, set default password if so
+    if (empty($_POST['password'])) {
+        // Default password
+        $password = 'usw1'; 
+    } else {
+        // Use provided password
+        $password = trim($_POST['password']); 
+    }
 
-    if (empty($username) || empty($email) || empty($password) || empty($role)) {
+    if (empty($username) || empty($email) || empty($role)) {
         $error = 'Please fill in all fields.';
     } else {
         // Hashing the password
@@ -80,7 +88,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         try {
             $stmt->execute([$username, $email, $hashedPassword, $role]);
-            header("Location: ProfilePage.php"); // Redirect on successful registration
+            // Redirect on successful registration
+            header("Location: ProfilePage.php"); 
             exit;
         } catch (PDOException $e) {
             $error = "Error while registering the user: " . $e->getMessage();
@@ -89,42 +98,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-<!-- This is the form to register new uers, admin only -->
-    <section class="vh-100 gradient-custom">
-        <div class="container py-5 h-100">
-            <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col-12 col-md-8 col-lg-6 col-xl-5">
-                    <div class="card bg-dark text-white" style="border-radius: 1rem;">
-                        <div class="card-body p-5 text-center">
-                            <div class="mb-md-5 mt-md-4 pb-5">
-                                <h2 class="fw-bold mb-2 text-uppercase">Register User</h2>
-                                <p class="text-white-50 mb-5">Please enter the details to register a new user.</p>
-                                <form action="register.php" method="post">
-                                    <div class="form-outline form-white mb-4">
-                                        <input type="text" class="form-control" name="username" placeholder="Username" required>
-                                    </div>
-                                    <div class="form-outline form-white mb-4">
-                                        <input type="email" class="form-control" name="email" placeholder="Email" required>
-                                    </div>
-                                    <div class="form-outline form-white mb-4">
-                                        <input type="password" class="form-control" name="password" placeholder="Password" required>
-                                    </div>
-                                    <div class="form-outline form-white mb-4">
-                                        <select class="form-select" name="role" aria-label="Role select">
-                                            <option selected>Select Role</option>
-                                            <option value="user">User</option>
-                                            <option value="admin">Admin</option>
-                                        </select>
-                                    </div>
-                                    <button class="btn btn-outline-light btn-lg px-5" type="submit">Register</button>
-                                </form>
-                            </div>
+<!-- This is the form to register new users, admin only -->
+<section class="vh-100 gradient-custom">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                <div class="card bg-dark text-white" style="border-radius: 1rem;">
+                    <div class="card-body p-5 text-center">
+                        <div class="mb-md-5 mt-md-4 pb-5">
+                            <h2 class="fw-bold mb-2 text-uppercase">Register User</h2>
+                            <p class="text-white-50 mb-5">Please enter the details to register a new user.</p>
+                            <form action="register.php" method="post">
+                                <div class="form-outline form-white mb-4">
+                                    <input type="text" class="form-control" name="username" placeholder="Username" required>
+                                </div>
+                                <div class="form-outline form-white mb-4">
+                                    <input type="email" class="form-control" name="email" placeholder="Email" required>
+                                </div>
+                                <div class="form-outline form-white mb-4">
+                                    <input type="password" class="form-control" name="password" placeholder="usw1 or enter Password">
+                                </div>
+                                <div class="form-outline form-white mb-4">
+                                    <select class="form-select" name="role" aria-label="Role select">
+                                        <option selected>Select Role</option>
+                                        <option value="user">User</option>
+                                        <option value="admin">Admin</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn-outline-light btn-lg px-5" type="submit">Register</button>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
+</section>
+
 
 </body>
   
