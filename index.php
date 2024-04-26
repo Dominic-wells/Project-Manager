@@ -86,54 +86,53 @@
   <?php
 include 'config.php';  
     // The database connection file, this is to avoid storing the connection details in plain view
-if ($pdo) {
-    $tasks = ['backlog' => '', 'doing' => '', 'done' => ''];
-    $stmt = $pdo->query("SELECT taskId, title, description, status, assigneeId, taskPriority, completionDate, creatorId FROM tasks WHERE deleted = FALSE ORDER BY FIELD(status, 'Backlog', 'Doing', 'Done')");
+    if ($pdo) {
+        $tasks = ['backlog' => '', 'doing' => '', 'done' => ''];
+        $stmt = $pdo->query("SELECT taskId, title, description, status, assigneeId, taskPriority, completionDate, creatorId FROM tasks WHERE deleted = FALSE ORDER BY FIELD(status, 'Backlog', 'Doing', 'Done')");
+        
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            // Fetch username of the assigned user
+            $stmtUser = $pdo->prepare("SELECT username FROM Users WHERE userId = ?");
+            $stmtUser->execute([$row['assigneeId']]);
+            $assignedUser = $stmtUser->fetchColumn();
+        
+            // Fetch username of the creator
+            $stmtCreator = $pdo->prepare("SELECT username FROM Users WHERE userId = ?");
+            $stmtCreator->execute([$row['creatorId']]);
+            $creatorUsername = $stmtCreator->fetchColumn();
+        
+            // This will add task and user data to the card 
+            $cardHtml = '<div class="card border-light text-white bg-dark mt-3">';
+            $cardHtml .= '<div class="card-header">';
+            $cardHtml .= 'Assigned User: ' . htmlspecialchars($assignedUser);
+            $cardHtml .= '<br>Priority: ' . htmlspecialchars($row['taskPriority']);
+            $cardHtml .= ' | Status: ' . htmlspecialchars($row['status']);
+            $cardHtml .= '</div>';
+            $cardHtml .= '<div class="card-body">';
+            $cardHtml .= '<h5 class="card-title">' . htmlspecialchars($row['title']) . '</h5>';
+            $cardHtml .= '<p class="card-text">' . htmlspecialchars($row['description']) . '</p>';
+            $cardHtml .= '</div>';
+            $cardHtml .= '<div class="card-footer text-white">';
+            $cardHtml .= 'Completion Date: ' . htmlspecialchars($row['completionDate']);
+            $cardHtml .= ' | Created By: ' . htmlspecialchars($creatorUsername);
+            $cardHtml .= '</div>';
+            $cardHtml .= '</div>';
+        
+            // Append to the correct status array element
+            $tasks[strtolower($row['status'])] .= $cardHtml;
+        }
     
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        // Fetch username of the assigned user
-        $stmtUser = $pdo->prepare("SELECT username FROM Users WHERE userId = ?");
-        $stmtUser->execute([$row['assigneeId']]);
-        $assignedUser = $stmtUser->fetchColumn();
-    
-        // Fetch username of the creator
-        $stmtCreator = $pdo->prepare("SELECT username FROM Users WHERE userId = ?");
-        $stmtCreator->execute([$row['creatorId']]);
-        $creatorUsername = $stmtCreator->fetchColumn();
-    
-        // This will add task and user data to the card 
-        $cardHtml = '<div class="card border-light text-white bg-dark mt-3">';
-        $cardHtml .= '<div class="card-header">';
-        $cardHtml .= 'Assigned User: ' . htmlspecialchars($assignedUser);
-        $cardHtml .= '<br>Priority: ' . htmlspecialchars($row['taskPriority']);
-        $cardHtml .= ' | Status: ' . htmlspecialchars($row['status']);
-        $cardHtml .= '</div>';
-        $cardHtml .= '<div class="card-body">';
-        $cardHtml .= '<h5 class="card-title">' . htmlspecialchars($row['title']) . '</h5>';
-        $cardHtml .= '<p class="card-text">' . htmlspecialchars($row['description']) . '</p>';
-        $cardHtml .= '</div>';
-        $cardHtml .= '<div class="card-footer text-white">';
-        $cardHtml .= 'Completion Date: ' . htmlspecialchars($row['completionDate']);
-        $cardHtml .= ' | Created By: ' . htmlspecialchars($creatorUsername);
-        $cardHtml .= '</div>';
-        $cardHtml .= '</div>';
-    
-        // Append to the correct status array element
-        $tasks[strtolower($row['status'])] .= $cardHtml;
+        // This will output the tasks into the correct divs
+        echo "<script>
+                document.getElementById('backlogTasks').innerHTML = `" . $tasks['backlog'] . "`;
+                document.getElementById('doingTasks').innerHTML = `" . $tasks['doing'] . "`;
+                document.getElementById('doneTasks').innerHTML = `" . $tasks['done'] . "`;
+              </script>";
+    } else {
+        // Failed to connect to the database error alert message
+        echo "<p>Failed to connect to the database.</p>";  
     }
-
-    // This will output the tasks into the correct divs
-    echo "<script>
-            document.getElementById('backlogTasks').innerHTML = `" . $tasks['backlog'] . "`;
-            document.getElementById('doingTasks').innerHTML = `" . $tasks['doing'] . "`;
-            document.getElementById('doneTasks').innerHTML = `" . $tasks['done'] . "`;
-          </script>";
-} else {
-    // Failed to connect to the database error alrt message
-    echo "<p>Failed to connect to the database.</p>";  
 ?>
-
-
   
    <!--Bootstrap JS-->
    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
@@ -144,5 +143,4 @@ if ($pdo) {
     <script src="assets/js/music.js"></script>
     <script src="assets/js/video.js"></script>
 </html>
-
 
