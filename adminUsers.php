@@ -37,7 +37,8 @@
         <div class="button-bar">
             <button type="button" onclick="location.href='index.php'">Home</button>
             <button type="button" onclick="location.href='profilePage.php'">Profile</button>
-            <button type="button" onclick="location.href='createTask.php'">Create Task</button>
+            <button type="button" onclick="location.href='createTasks.php'">Create Task</button>
+            <button type="button" onclick="location.href='adminTask.php'">Admin Tasks</button>
             <button type="button" onclick="location.href='actions/logout.php'">Logout</button>
             <button id="myBtn" onclick="myFunction()">Pause</button>
             <button id="music-toggle">Toggle Music</button>
