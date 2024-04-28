@@ -60,6 +60,11 @@
             <button type="button" onclick="location.href='index.php'">Home</button>
             <button type="button" onclick="location.href='createTask.php'">Create Task</button>
             <button type="button" onclick="location.href='changePassword.php'">Change Password</button>
+            <?php
+            if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
+                echo '<button type="button" onclick="location.href=\'adminTasks.php\'">Admin Tasks</button>';
+            }
+            ?>
             <button type="button" onclick="location.href='actions/logout.php'">Logout</button>
             <button id="myBtn" onclick="myFunction()">Pause</button>
             <button id="music-toggle">Toggle Music</button>
