@@ -1,3 +1,10 @@
+<?php
+session_start();
+include 'config.php';
+?>
+
+
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -37,11 +44,19 @@
 
     <header class="viewport-header">
       
-        <div class="button-bar">
+    <div class="button-bar">
+            <?php
+            if (isset($_SESSION['role']) && $_SESSION['role'] == 'admin') {
+                echo '<button type="button" onclick="location.href=\'adminTasks.php\'">Admin Tasks</button>';
+            }
+            if (isset($_SESSION['role']) && ($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'user')) {
+                echo '<button type="button" onclick="location.href=\'profilePage.php\'">Profile</button>';
+            }
+            ?>
+            <button type="button" onclick="location.href='login.php'">Login</button>
+            <button type="button" onclick="location.href='actions/logout.php'">Logout</button>
             <button id="myBtn" onclick="myFunction()">Pause</button>
             <button id="music-toggle">Toggle Music</button>
-            <button  type="button" onclick="location.href='login.php'">Login</button>
-            <button type="button" onclick="location.href='actions/logout.php'">Logout</button>
         </div>
         <h1>
             Plan With
