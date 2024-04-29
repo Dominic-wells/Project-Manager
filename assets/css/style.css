@@ -81,3 +81,16 @@ main {
 #feedback {
     margin-top: 20px;
 }
+
+
+/* Reduce padding for all table cells */
+.table td {
+    padding: 8px;
+    /* adjust this value to reduce/increase spacing */
+}
+
+/* Specifically target the Description column */
+.description-cell {
+    padding: 8px;
+    /* adjust this value to reduce/increase spacing */
+}
