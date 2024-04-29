@@ -1,5 +1,6 @@
 <?php
 session_start();
+// The database connection file, this is to avoid storing the connection details in plain view
 include 'config/config.php';
 ?>
 <!doctype html>
@@ -28,8 +29,8 @@ include 'config/config.php';
   <body>
 
 
-         <!-- The Video -->
-         <video autoplay muted loop id="myVideo">
+        <!-- The Video -->
+        <video autoplay muted loop id="myVideo">
         <source src="assets/video/background3.mp4" type="video/mp4">
     </video>
 
