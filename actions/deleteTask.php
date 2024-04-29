@@ -1,7 +1,7 @@
 <?php
 session_start();
 //This gets the database connection file
-require '../config.php'; 
+require '../config/config.php';
 //This checks if the user is authenticated
 if (!isset($_SESSION['userId'])) {
     echo json_encode(['message' => 'Not authenticated']);
