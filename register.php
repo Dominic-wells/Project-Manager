@@ -51,13 +51,14 @@
     
     <?php
 session_start();
-require_once 'config.php'; 
+require_once 'config/config.php';
 // The database connection file, this is to avoid storing the connection details in plain view
 // Redirect if not logged in or not an admin
 if (!isset($_SESSION['userId']) || $_SESSION['role'] !== 'admin') {
     header('Location: login.php');
     exit;
 }
+
 
 $username = $email = $password = $role = "";
 $error = "";
