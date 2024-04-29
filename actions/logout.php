@@ -18,6 +18,6 @@ if (ini_get("session.use_cookies")) {
 session_destroy();
 
 // Redirect to the index page after logging out, all users even guests can view.
-header("Location:/index.php");
+header("Location: /index.php");
 exit;
 ?>
