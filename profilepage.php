@@ -25,7 +25,7 @@
 
     <?php
     // The database connection file, this is to avoid storing the connection details in plain view
-    include 'config.php';
+    include 'config/config.php';
     session_start();
 
     // This checks if the user is logged in, if not they are redirected to the login page
