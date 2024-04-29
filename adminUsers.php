@@ -47,7 +47,7 @@
     </header>
 
 <?php
-    include 'config.php';
+    include 'config/config.php';
     session_start();
     // The database connection file, this is to avoid storing the connection details in plain view
 
