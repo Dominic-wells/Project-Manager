@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Google Fonts -->
+    <!-- Googlefonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@500&display=swap" rel="stylesheet">
     <title>The Project King - Edit Task</title>
-    <!-- Bootstrap CSS -->
+    <!--Bootstrap CSS-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-    <!-- Custom CSS -->
+    <!--Custom CSS-->
     <link rel="stylesheet" href="assets/css/style.css" type="text/css" />
     <!--Meta data-->
     <meta name="description" content="The Project King - A tool to help users manage their lives">
@@ -22,7 +22,7 @@
 <body>
     <!-- Background Video -->
     <video autoplay muted loop id="myVideo">
-        <!-- Placeholder for Background Video -->
+    <source src="assets/video/background3.mp4" type="video/mp4">
     </video>
 
     <!-- Background Music -->
@@ -44,10 +44,10 @@
     </header>
 
     <?php
-    include 'config.php';
     // The database connection file, this is to avoid storing the connection details in plain view
+    include 'config/config.php';
     session_start();
-    // Redirects non-admin/users to the login page
+     // Redirects non-admin/users to the login page
     if (!isset($_SESSION['userId']) || $_SESSION['role'] === 'guest') {
         header('Location: login.php');
         exit;
@@ -58,8 +58,9 @@
         echo '<div class="alert alert-danger">Task ID is missing.</div>';
         exit;
     }
+    // Declare $task as an empty array to hold task data
+    $task = [];
 
-    // Fetch task details if we are not posting
     if ($_SERVER["REQUEST_METHOD"] !== "POST") {
         $stmt = $pdo->prepare("SELECT * FROM Tasks WHERE taskId = ?");
         $stmt->execute([$taskId]);
@@ -70,15 +71,21 @@
             exit;
         }
     } else {
+        if (empty($task)) { // Fetch task if not fetched before
+            $stmt = $pdo->prepare("SELECT * FROM Tasks WHERE taskId = ?");
+            $stmt->execute([$taskId]);
+            $task = $stmt->fetch(PDO::FETCH_ASSOC);
+        }
+
+        // Sanitise and assign POST data to variables
         $title = trim($_POST['title']);
         $description = trim($_POST['description']);
         $completionDate = trim($_POST['completionDate']);
         $status = trim($_POST['status']);
         $priority = trim($_POST['priority']);
-
-        // Assignee only set by admins
         $assigneeId = ($_SESSION['role'] === 'admin') ? trim($_POST['assigneeId']) : $task['assigneeId'];
-        // Update the task in the database
+
+        // Prepare and execute an update statement
         $stmt = $pdo->prepare("UPDATE Tasks SET title = ?, description = ?, completionDate = ?, status = ?, assigneeId = ?, taskPriority = ? WHERE taskId = ? AND (creatorId = ? OR ? = 'admin')");
         if ($stmt->execute([$title, $description, $completionDate, $status, $assigneeId, $priority, $taskId, $_SESSION['userId'], $_SESSION['role']])) {
             echo '<div class="alert alert-success">Task updated successfully.</div>';
@@ -86,14 +93,12 @@
             echo '<div class="alert alert-danger">Error updating task: ' . $e->getMessage() . '</div>';
         }
     }
-
-    // Fetch users for the dropdown only if admin
+      // Only admin users can fetch user list for assignee options
     if ($_SESSION['role'] === 'admin') {
         $stmt = $pdo->query("SELECT userId, username FROM Users WHERE role IN ('user', 'admin')");
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     ?>
-    <!-- Html form to edit task-->
     <div class="container py-5 h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col-12 col-md-8 col-lg-6 col-xl-5">
@@ -141,13 +146,13 @@
         </div>
     </div>
 
-  <!--Bootstrap JS-->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-       integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
-       crossorigin="anonymous"></script>
+    <!--Bootstrap JS-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+         integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+         crossorigin="anonymous"></script>
 
-   <!--Custom JS-->
-   <script src="assets/js/music.js"></script>
-   <script src="assets/js/video.js"></script>
+     <!--Custom JS-->
+     <script src="assets/js/music.js"></script>
+     <script src="assets/js/video.js"></script>
 </body>
 </html>
