@@ -69,7 +69,7 @@
 
     <?php
 session_start();
-require_once 'config.php'; 
+require_once 'config/config.php';
 // The database connection file, this is to avoid storing the connection details in plain view
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
