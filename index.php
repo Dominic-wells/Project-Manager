@@ -1,10 +1,7 @@
 <?php
 session_start();
-include 'config.php';
+include 'config/config.php';
 ?>
-
-
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -100,7 +97,7 @@ include 'config.php';
 
   </body>
   <?php
-include 'config.php';  
+include 'config/config.php';  
     // The database connection file, this is to avoid storing the connection details in plain view
     if ($pdo) {
         $tasks = ['backlog' => '', 'doing' => '', 'done' => ''];
