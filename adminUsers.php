@@ -43,7 +43,7 @@
             <button id="myBtn" onclick="myFunction()">Pause</button>
             <button id="music-toggle">Toggle Music</button>
         </div>
-        <h1>Edit Your Task</h1>
+        <h1>Delete user</h1>
     </header>
 
 <?php
